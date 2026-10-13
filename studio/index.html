@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <title>Texture Workbench</title>
+  </head>
+  <body>
+    <div class="app-frame">
+      <header class="topbar">
+        <a class="home-button" href="#" id="homeButton" aria-label="Volver al inicio"><span aria-hidden="true">‹</span> Volver al inicio</a>
+        <a class="brand" href="#" aria-label="Laccite"><span>Laccite</span></a>
+        <div class="topbar-project" id="topbarProject" hidden></div>
+        <nav class="workspace-tabs" id="workspaceTabs" aria-label="Vistas del proyecto" hidden>
+          <button class="workspace-tab active" id="managerTab" type="button" aria-current="page"><span aria-hidden="true">▰</span> Gestor</button>
+          <button class="workspace-tab" id="openPhotopeaButton" type="button" disabled><span aria-hidden="true">⌁</span> Editor</button>
+          <button class="workspace-tab" id="inspectorTab" type="button" disabled><span aria-hidden="true">▧</span> Inspector</button>
+        </nav>
+        <div class="topbar-actions" id="topbarActions" hidden>
+          <button class="button button-primary" id="exportProjectButton" type="button" title="Exportar el proyecto completo">ZIP del proyecto</button>
+          <button class="button button-quiet" id="addFilesButton" type="button"><span aria-hidden="true">＋</span> Añadir archivos</button>
+          <button class="icon-button" id="showDictionaryButton" type="button" title="Mostrar diccionario" aria-label="Mostrar diccionario" aria-pressed="false"><span aria-hidden="true">◫</span></button>
+        </div>
+      </header>
+      <main>
+        <section class="library-view" id="libraryView">
+          <div class="library-heading">
+            <div><p class="eyebrow">Espacio de trabajo local</p><h1>Proyectos</h1><p class="muted">Guardados en este navegador; exporta un ZIP para moverlos o respaldarlos.</p></div>
+            <div class="library-actions"><button class="button button-quiet" id="createProjectButton" type="button">Nuevo proyecto</button><button class="button button-primary" id="openZipButton" type="button">Abrir ZIP</button></div>
+          </div>
+          <input id="zipInput" class="visually-hidden" type="file" accept=".zip,application/zip">
+          <input id="filesInput" class="visually-hidden" type="file" multiple>
+          <div class="library-toolbar"><h2>Proyectos recientes</h2><span id="projectCount">0 proyectos</span></div>
+          <div class="project-list" id="projectList"><button class="create-project-card" id="emptyLibrary" type="button"><span class="empty-mark">＋</span><strong>Crear proyecto</strong><span>Empieza con un espacio vacío.</span></button></div>
+          <p class="library-status" id="libraryStatus" role="status"></p>
+        </section>
+        <section class="project-view" id="projectView" hidden>
+          <div class="project-content" id="projectContent">
+          <section class="manager-content" id="managerContent">
+          <div class="manager-toolbar" role="toolbar" aria-label="Acciones de recursos">
+            <button class="toolbar-command" id="createFolderButton" type="button"><span aria-hidden="true">＋</span> Nueva carpeta</button>
+            <span class="toolbar-divider" aria-hidden="true"></span>
+            <button class="toolbar-icon" id="cutResourcesButton" type="button" title="Cortar selección" aria-label="Cortar selección" disabled><span aria-hidden="true">✂</span></button>
+            <button class="toolbar-icon" id="copyResourcesButton" type="button" title="Copiar selección" aria-label="Copiar selección" disabled><span aria-hidden="true">▣</span></button>
+            <button class="toolbar-icon" id="renameResourceButton" type="button" title="Renombrar selección" aria-label="Renombrar selección" disabled><span aria-hidden="true">✎</span></button>
+            <button class="toolbar-icon" id="pasteResourcesButton" type="button" title="Pegar aquí" aria-label="Pegar aquí" hidden><span aria-hidden="true">▤</span></button>
+            <span class="toolbar-divider" aria-hidden="true"></span>
+            <button class="toolbar-command toolbar-export" id="exportSelectionButton" type="button" title="Exportar solo los recursos seleccionados" disabled><span aria-hidden="true">⇩</span> Exportar</button>
+            <span class="toolbar-spacer"></span>
+            <span class="selection-count" id="selectionCount" aria-live="polite">0 seleccionados</span>
+            <label class="manager-search"><span aria-hidden="true">⌕</span><input id="browserSearch" type="search" placeholder="Buscar" aria-label="Buscar en esta carpeta"></label>
+          </div>
+          <div class="workbench" id="workbench">
+            <aside class="files-pane"><div class="pane-heading"><h2>Archivos del proyecto</h2><button class="icon-button pane-menu" id="toggleFileSearch" type="button" title="Filtrar archivos" aria-label="Filtrar archivos" aria-expanded="false">···</button></div><label class="file-search-wrap"><span aria-hidden="true">⌕</span><input id="fileSearch" type="search" placeholder="Filtrar contenido" aria-label="Filtrar carpetas y archivos"></label><nav class="file-list" id="fileList" aria-label="Árbol del proyecto"></nav></aside>
+            <div class="sidebar-resizer" id="sidebarResizer" role="separator" aria-orientation="vertical" aria-label="Ajustar ancho del árbol de archivos" aria-valuemin="144" aria-valuemax="520" aria-valuenow="260" tabindex="0"></div>
+            <section class="browser-pane" aria-label="Explorador del proyecto"><header class="browser-heading"><h1 id="projectName"></h1></header><div class="browser-toolbar"><nav class="browser-path" id="browserPath" aria-label="Ruta del directorio"></nav><span class="browser-count" id="fileCount">0 elementos</span></div><div class="folder-grid" id="folderGrid"></div><footer class="browser-statusbar"><span id="browserStatusCount">0 elementos</span><span id="browserSelectionCount">0 seleccionados</span></footer></section>
+            <aside class="dictionary-pane" id="dictionaryPane" aria-label="Panel del diccionario"><div class="pane-heading dictionary-heading"><div><span class="eyebrow">Metadata del proyecto</span><h2>Diccionario</h2></div><div class="dictionary-actions"><button class="button button-quiet button-small" id="saveDictionaryButton" type="button">Guardar</button><button class="icon-button" id="closeDictionaryButton" type="button" title="Ocultar diccionario" aria-label="Ocultar panel del diccionario">×</button></div></div><div class="dictionary-selection"><strong id="selectedFileName">Selecciona una textura</strong><span id="selectedFileKind"></span><p id="assetFacts"></p></div><p class="dictionary-hint">Fichero portable: <code>texture-dictionary.txt</code></p><textarea id="dictionaryEditor" spellcheck="false" aria-label="Editor del diccionario del proyecto"></textarea><div class="dictionary-footer"><span id="dictionaryStatus">Esperando proyecto</span><span id="dictionaryAssetCount">0 fichas</span></div></aside>
+          </div>
+          </section>
+          <section class="editor-view" id="editorView" aria-label="Editor de imágenes" hidden>
+            <header class="photopea-toolbar editor-toolbar"><div><strong id="photopeaFileName">Photopea</strong><span id="photopeaStatus">Selecciona una imagen en el gestor</span></div><button class="button button-quiet button-small" id="saveFromPhotopeaButton" type="button" disabled>Guardar en proyecto</button></header>
+            <iframe id="photopeaFrame" title="Editor de imágenes Photopea" src="about:blank" allow="clipboard-read; clipboard-write"></iframe>
+          </section>
+          <section class="inspector-view" id="inspectorView" aria-label="Inspector de imagen" hidden>
+            <header class="inspector-toolbar"><div><strong id="inspectorFileName">Inspector</strong><span id="inspectorFilePath"></span></div><button class="button button-quiet button-small" id="inspectorOpenEditor" type="button">Abrir en Photopea</button></header>
+            <div class="inspector-stage"><img id="inspectorImage" alt=""></div>
+            <footer class="inspector-status"><span id="inspectorDimensions">Dimensiones</span><span id="inspectorFormat">Formato</span><span id="inspectorSize">Tamaño</span></footer>
+          </section>
+          </div>
+          <footer class="project-statusbar"><span class="save-state" id="saveState">Guardado local</span><span class="project-meta" id="projectMeta"></span></footer>
+        </section>
+      </main>
+    </div>
+    <dialog class="item-name-dialog" id="itemNameDialog" aria-labelledby="itemNameTitle">
+      <form id="itemNameForm" method="dialog">
+        <h2 id="itemNameTitle">Nombre</h2>
+        <label><span id="itemNameLabel">Nombre</span><input id="itemNameInput" type="text" autocomplete="off" required></label>
+        <div class="item-name-actions"><button class="button button-quiet" value="cancel" type="submit" formnovalidate>Cancelar</button><button class="button button-primary" value="save" type="submit">Guardar</button></div>
+      </form>
+    </dialog>
+    <dialog class="resource-actions-dialog project-actions-dialog" id="projectActionsDialog" aria-labelledby="projectActionsTitle">
+      <header><div><span>Proyecto</span><h2 id="projectActionsTitle"></h2></div><button class="icon-button" id="closeProjectActions" type="button" aria-label="Cerrar opciones">×</button></header>
+      <div class="resource-action-list">
+        <button id="projectEditDetailsAction" type="button"><span aria-hidden="true">✎</span> Nombre y descripción</button>
+        <button id="projectDeleteAction" type="button" class="danger-action"><span aria-hidden="true">⌫</span> Eliminar proyecto</button>
+      </div>
+    </dialog>
+    <dialog class="item-name-dialog project-details-dialog" id="projectDetailsDialog" aria-labelledby="projectDetailsTitle">
+      <form id="projectDetailsForm" method="dialog">
+        <h2 id="projectDetailsTitle">Detalles del proyecto</h2>
+        <label><span>Nombre</span><input id="projectNameInput" type="text" autocomplete="off" required></label>
+        <label><span>Descripción</span><textarea id="projectDescriptionInput" rows="3" maxlength="240"></textarea></label>
+        <div class="item-name-actions"><button class="button button-quiet" value="cancel" type="submit" formnovalidate>Cancelar</button><button class="button button-primary" value="save" type="submit">Guardar</button></div>
+      </form>
+    </dialog>
+    <dialog class="item-name-dialog project-delete-dialog" id="projectDeleteDialog" aria-labelledby="projectDeleteTitle">
+      <form id="projectDeleteForm" method="dialog">
+        <h2 id="projectDeleteTitle">Eliminar proyecto</h2>
+        <p id="projectDeleteMessage"></p>
+        <div class="item-name-actions"><button class="button button-quiet" value="cancel" type="submit" formnovalidate>Cancelar</button><button class="button button-danger" value="delete" type="submit">Eliminar definitivamente</button></div>
+      </form>
+    </dialog>
+    <dialog class="resource-actions-dialog" id="resourceActionsDialog" aria-labelledby="resourceActionsName">
+      <header><div><span id="resourceActionKind">Recurso</span><h2 id="resourceActionsName"></h2></div><button class="icon-button" id="closeResourceActions" type="button" aria-label="Cerrar acciones">×</button></header>
+      <div class="resource-action-list">
+        <button id="resourceRenameAction" type="button"><span aria-hidden="true">✎</span> Cambiar nombre</button>
+        <button id="resourceOpenFolderAction" type="button"><span aria-hidden="true">▰</span> Abrir carpeta</button>
+        <button id="resourceCopyAction" type="button"><span aria-hidden="true">▣</span> Copiar</button>
+        <button id="resourceCutAction" type="button"><span aria-hidden="true">✂</span> Cortar</button>
+        <button id="resourceExportAction" type="button"><span aria-hidden="true">⇩</span> Exportar</button>
+        <button id="resourceViewAction" type="button"><span aria-hidden="true">◉</span> Ver</button>
+        <button id="resourcePhotopeaAction" type="button"><span aria-hidden="true">⌁</span> Abrir en Photopea</button>
+      </div>
+    </dialog>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

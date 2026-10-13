@@ -1,0 +1,5 @@
+{
+  "installCommand": "npm --prefix studio ci",
+  "buildCommand": "npm --prefix studio run build",
+  "outputDirectory": "studio/dist"
+}
